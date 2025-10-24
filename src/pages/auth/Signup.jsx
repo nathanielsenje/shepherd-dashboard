@@ -89,7 +89,7 @@ export default function Signup() {
     setIsSubmitting(true);
 
     try {
-      const { confirmPassword, ...userData } = formData;
+      const { confirmPassword: _confirmPassword, ...userData } = formData;
       const result = await register(userData);
 
       if (result.success) {
@@ -98,7 +98,7 @@ export default function Signup() {
       } else {
         toast.error(result.message || 'Failed to create account');
       }
-    } catch (error) {
+    } catch {
       toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
