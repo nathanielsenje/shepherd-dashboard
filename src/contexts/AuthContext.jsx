@@ -27,6 +27,27 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      const response = await authAPI.register(userData);
+      // Store tokens in localStorage (API layer doesn't do this)
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setUser(response.user);
+      return { success: true };
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Registration failed. Please try again.',
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     authAPI.logout();
     setUser(null);
@@ -65,6 +86,7 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     login,
+    register,
     logout,
     changePassword,
     setupMFA,
