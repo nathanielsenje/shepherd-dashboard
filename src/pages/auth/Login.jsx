@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { EyeIcon, EyeSlashIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
@@ -207,6 +207,14 @@ export const Login = () => {
               <p className="text-sm text-neutral-700 font-mono mb-1">admin@church.org</p>
               <p className="text-sm text-neutral-700 font-mono">Admin123!</p>
             </div>
+
+            {/* Signup link */}
+            <p className="mt-4 text-sm text-center text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
 
