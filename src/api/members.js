@@ -42,4 +42,12 @@ export const membersAPI = {
     const response = await apiClient.delete(`/members/${id}`);
     return response.data;
   },
+
+  // Search members
+  search: async (query) => {
+    const response = await apiClient.get('/members', {
+      params: { search: query, limit: 50 }
+    });
+    return response.data;
+  },
 };

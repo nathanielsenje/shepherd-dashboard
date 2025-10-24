@@ -2,7 +2,17 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { membersAPI } from '../../api/members';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import {
+  LoadingSpinner,
+  ConfirmDialog,
+  Avatar,
+  StatusBadge,
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  Alert
+} from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 import { canCreateMember, canDeleteMember } from '../../utils/permissions';
 import {
@@ -12,11 +22,8 @@ import {
   EyeIcon,
   PencilIcon,
   TrashIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
-import { ConfirmDialog } from '../../components/common/ConfirmDialog';
-import Avatar from '../../components/common/Avatar';
-import StatusBadge from '../../components/common/StatusBadge';
-import Badge from '../../components/common/Badge';
 import toast from 'react-hot-toast';
 
 const STATUS_OPTIONS = [

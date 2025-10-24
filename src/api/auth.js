@@ -36,4 +36,9 @@ export const authAPI = {
     const response = await apiClient.post('/auth/mfa/verify', { token });
     return response.data;
   },
+
+  updateProfile: async (profileData) => {
+    const response = await apiClient.patch('/auth/profile', profileData);
+    return response.data;
+  },
 };

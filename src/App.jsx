@@ -12,6 +12,9 @@ import { MemberForm } from './pages/members/MemberForm';
 import { MemberDetail } from './pages/members/MemberDetail';
 import { MemberEngagement } from './pages/members/MemberEngagement';
 import { UnconnectedMembers } from './pages/members/UnconnectedMembers';
+import { UserProfile } from './pages/profile/UserProfile';
+import { SearchResults } from './pages/search/SearchResults';
+import { Settings } from './pages/settings/Settings';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -106,6 +109,39 @@ function App() {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <MemberEngagement />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <UserProfile />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <SearchResults />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <Settings />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

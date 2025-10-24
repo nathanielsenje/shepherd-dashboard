@@ -1,7 +1,23 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon, InformationCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { Button } from '../ui';
 
+/**
+ * ConfirmDialog Component
+ *
+ * Confirmation dialog for dangerous or important actions
+ *
+ * @param {boolean} open - Whether dialog is open
+ * @param {function} onClose - Close handler
+ * @param {function} onConfirm - Confirm action handler
+ * @param {string} title - Dialog title
+ * @param {string} message - Dialog message
+ * @param {string} confirmText - Confirm button text (default: "Confirm")
+ * @param {string} cancelText - Cancel button text (default: "Cancel")
+ * @param {string} type - Dialog type (warning, danger, info)
+ * @param {string} confirmVariant - Button variant for confirm action (default: based on type)
+ */
 export const ConfirmDialog = ({
   open,
   onClose,
@@ -11,12 +27,29 @@ export const ConfirmDialog = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   type = 'warning',
+  confirmVariant,
 }) => {
-  const iconColors = {
-    warning: 'text-yellow-600 bg-yellow-100',
-    danger: 'text-red-600 bg-red-100',
-    info: 'text-blue-600 bg-blue-100',
+  const configs = {
+    warning: {
+      icon: ExclamationTriangleIcon,
+      iconColors: 'text-amber-600 bg-amber-100',
+      buttonVariant: 'warning',
+    },
+    danger: {
+      icon: XCircleIcon,
+      iconColors: 'text-red-600 bg-red-100',
+      buttonVariant: 'danger',
+    },
+    info: {
+      icon: InformationCircleIcon,
+      iconColors: 'text-blue-600 bg-blue-100',
+      buttonVariant: 'primary',
+    },
   };
+
+  const config = configs[type] || configs.warning;
+  const Icon = config.icon;
+  const buttonVariant = confirmVariant || config.buttonVariant;
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -30,7 +63,7 @@ export const ConfirmDialog = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-neutral-900 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -44,45 +77,43 @@ export const ConfirmDialog = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div
-                      className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${iconColors[type]} sm:mx-0 sm:h-10 sm:w-10`}
+                      className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${config.iconColors} sm:mx-0 sm:h-10 sm:w-10`}
                     >
-                      <ExclamationTriangleIcon className="h-6 w-6" aria-hidden="true" />
+                      <Icon className="h-6 w-6" aria-hidden="true" />
                     </div>
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title
                         as="h3"
-                        className="text-base font-semibold leading-6 text-gray-900"
+                        className="text-base font-semibold leading-6 text-neutral-900"
                       >
                         {title}
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500">{message}</p>
+                        <p className="text-sm text-neutral-600">{message}</p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="button"
-                    className="btn-primary w-full sm:ml-3 sm:w-auto"
+                <div className="bg-neutral-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
+                  <Button
+                    variant={buttonVariant}
                     onClick={() => {
                       onConfirm();
                       onClose();
                     }}
                   >
                     {confirmText}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-outline mt-3 w-full sm:mt-0 sm:w-auto"
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={onClose}
                   >
                     {cancelText}
-                  </button>
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -92,3 +123,5 @@ export const ConfirmDialog = ({
     </Transition.Root>
   );
 };
+
+export default ConfirmDialog;

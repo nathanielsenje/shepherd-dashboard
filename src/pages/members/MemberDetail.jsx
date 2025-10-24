@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { membersAPI } from '../../api/members';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import Avatar from '../../components/common/Avatar';
-import StatusBadge from '../../components/common/StatusBadge';
-import Badge from '../../components/common/Badge';
+import {
+  LoadingSpinner,
+  Avatar,
+  StatusBadge,
+  Badge,
+  Button,
+  Card,
+  Alert
+} from '../../components/ui';
 import {
   ArrowLeftIcon,
   PencilIcon,

@@ -44,6 +44,15 @@ export const AuthProvider = ({ children }) => {
     return await authAPI.verifyMFA(token);
   };
 
+  const updateProfile = async (profileData) => {
+    const data = await authAPI.updateProfile(profileData);
+    // Update local user state and localStorage
+    const updatedUser = { ...user, ...data.user };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    return data;
+  };
+
   const hasRole = (roles) => {
     if (!user) return false;
     if (Array.isArray(roles)) {
@@ -60,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     changePassword,
     setupMFA,
     verifyMFA,
+    updateProfile,
     hasRole,
     isAuthenticated: !!user,
   };

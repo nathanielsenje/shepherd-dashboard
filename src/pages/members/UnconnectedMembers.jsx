@@ -1,8 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import { membersAPI } from '../../api/members';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import { EyeIcon } from '@heroicons/react/24/outline';
+import {
+  LoadingSpinner,
+  Card,
+  StatusBadge,
+  Button,
+  Alert,
+  EmptyState
+} from '../../components/ui';
+import { EyeIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
 export const UnconnectedMembers = () => {
@@ -13,9 +19,11 @@ export const UnconnectedMembers = () => {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600">Error loading unconnected members: {error.message}</p>
-      </div>
+      <Alert
+        variant="error"
+        title="Error Loading Members"
+        message={`Unable to load unconnected members: ${error.message}`}
+      />
     );
   }
 
@@ -23,119 +31,119 @@ export const UnconnectedMembers = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Unconnected Members</h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <h1 className="text-2xl font-bold text-neutral-900">Unconnected Members</h1>
+        <p className="text-sm text-neutral-600 mt-1">
           Members who are not part of any connect group
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="card">
+      {/* Stats Card */}
+      <Card>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">Total Unconnected</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">{data?.count || 0}</p>
+            <p className="text-sm font-medium text-neutral-500">Total Unconnected</p>
+            <p className="text-3xl font-bold text-neutral-900 mt-1">{data?.count || 0}</p>
           </div>
           {data?.count > 0 && (
-            <div className="text-right">
-              <p className="text-sm text-gray-600">
-                These members need follow-up to help them get connected to a community
-              </p>
-            </div>
+            <Alert
+              variant="warning"
+              message="These members need follow-up to help them get connected to a community"
+              className="mb-0"
+            />
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Members List */}
-      <div className="card overflow-hidden p-0">
+      <Card padding={false}>
         {isLoading ? (
           <div className="py-12">
             <LoadingSpinner size="lg" text="Loading unconnected members..." />
           </div>
         ) : data?.data?.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">
-              Great! All members are connected to a group.
-            </p>
-          </div>
+          <EmptyState
+            icon={<UsersIcon className="h-12 w-12" />}
+            title="All Members Connected!"
+            description="Great! All members are connected to a group."
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-neutral-200">
+              <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Email
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Phone
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     First Visit
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-neutral-200">
                 {data?.data?.map((member) => (
-                  <tr key={member.id} className="hover:bg-gray-50">
+                  <tr key={member.id} className="hover:bg-neutral-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-neutral-900">
                         {member.firstName} {member.lastName}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-neutral-600">
                         {member.email ? (
                           <a
                             href={`mailto:${member.email}`}
-                            className="text-accent hover:text-accent-hover"
+                            className="text-indigo-600 hover:text-indigo-800"
                           >
                             {member.email}
                           </a>
                         ) : (
-                          '-'
+                          <span className="text-neutral-400">-</span>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-neutral-600">
                         {member.phone ? (
                           <a
                             href={`tel:${member.phone}`}
-                            className="text-accent hover:text-accent-hover"
+                            className="text-indigo-600 hover:text-indigo-800"
                           >
                             {member.phone}
                           </a>
                         ) : (
-                          '-'
+                          <span className="text-neutral-400">-</span>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        {member.status}
-                      </span>
+                      <StatusBadge status={member.status} />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
                       {member.firstVisitDate
                         ? format(new Date(member.firstVisitDate), 'MMM dd, yyyy')
-                        : '-'}
+                        : <span className="text-neutral-400">-</span>}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         to={`/members/${member.id}`}
-                        className="text-accent hover:text-accent-hover inline-flex items-center"
+                        leftIcon={<EyeIcon className="h-5 w-5" />}
                       >
-                        <EyeIcon className="h-5 w-5" />
-                      </Link>
+                        View
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -143,7 +151,7 @@ export const UnconnectedMembers = () => {
             </table>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

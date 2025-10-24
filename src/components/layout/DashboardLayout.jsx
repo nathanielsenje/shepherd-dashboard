@@ -3,11 +3,18 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { Toaster } from 'react-hot-toast';
 
+/**
+ * DashboardLayout Component
+ *
+ * Main layout wrapper for dashboard pages with sidebar and header
+ *
+ * @param {node} children - Page content
+ */
 export const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-neutral-50">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
       <div className="flex flex-col flex-1 overflow-hidden">
@@ -24,11 +31,17 @@ export const DashboardLayout = ({ children }) => {
           duration: 4000,
           style: {
             background: '#fff',
-            color: '#262424',
+            color: '#171717',
           },
           success: {
             iconTheme: {
-              primary: '#D91E36',
+              primary: '#6366F1',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#EF4444',
               secondary: '#fff',
             },
           },
@@ -37,3 +50,5 @@ export const DashboardLayout = ({ children }) => {
     </div>
   );
 };
+
+export default DashboardLayout;

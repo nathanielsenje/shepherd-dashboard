@@ -5,13 +5,12 @@ import {
   BellIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
-  KeyIcon,
   MagnifyingGlassIcon,
   CalendarIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Avatar from '../common/Avatar';
+import { Avatar } from '../ui';
 
 export const Header = ({ setSidebarOpen }) => {
   const { user, logout } = useAuth();
@@ -21,6 +20,13 @@ export const Header = ({ setSidebarOpen }) => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
 
   const currentDate = new Date().toLocaleDateString('en-US', {
@@ -44,16 +50,16 @@ export const Header = ({ setSidebarOpen }) => {
 
         {/* Search bar */}
         <div className="flex-1 max-w-2xl mx-4">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
+          <form onSubmit={handleSearch} className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 pointer-events-none" />
             <input
-              type="text"
-              placeholder='Try searching "malaria"'
+              type="search"
+              placeholder='Search members by name, email, or phone...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white transition-all"
             />
-          </div>
+          </form>
         </div>
 
         {/* Right side items */}
@@ -142,21 +148,7 @@ export const Header = ({ setSidebarOpen }) => {
                         } flex w-full items-center px-5 py-2.5 text-sm font-medium text-neutral-700 transition-colors`}
                       >
                         <UserCircleIcon className="mr-3 h-5 w-5 text-neutral-400" />
-                        Your Profile
-                      </button>
-                    )}
-                  </Menu.Item>
-
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        onClick={() => navigate('/change-password')}
-                        className={`${
-                          active ? 'bg-neutral-50' : ''
-                        } flex w-full items-center px-5 py-2.5 text-sm font-medium text-neutral-700 transition-colors`}
-                      >
-                        <KeyIcon className="mr-3 h-5 w-5 text-neutral-400" />
-                        Change Password
+                        My Profile
                       </button>
                     )}
                   </Menu.Item>

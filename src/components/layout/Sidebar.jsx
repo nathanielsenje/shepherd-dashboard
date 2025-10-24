@@ -9,8 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 import { membersAPI } from '../../api/members';
-import Badge from '../common/Badge';
-import Avatar from '../common/Avatar';
+import { Badge, Avatar } from '../ui';
 import logoIcon from '../../assets/icon.png';
 import logoFull from '../../assets/logo.png';
 
@@ -67,7 +66,7 @@ export const Sidebar = ({ open, setOpen }) => {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center h-14 px-4 border-b border-neutral-200 bg-white">
+          <div className="flex items-center h-16 px-4 border-b border-neutral-200 bg-white">
             <Link to="/" className="flex items-center space-x-2">
               <img src={logoIcon} alt="Shepherd Logo" className="w-7 h-7 rounded-lg" />
               <div>

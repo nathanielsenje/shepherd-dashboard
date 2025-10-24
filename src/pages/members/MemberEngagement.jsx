@@ -1,7 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { membersAPI } from '../../api/members';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import {
+  LoadingSpinner,
+  Card,
+  Badge,
+  Button,
+  Alert
+} from '../../components/ui';
 import { ArrowLeftIcon, CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
@@ -24,11 +30,15 @@ export const MemberEngagement = () => {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600">Error loading engagement: {error.message}</p>
-        <button onClick={() => navigate(`/members/${id}`)} className="btn-primary mt-4">
+      <div className="space-y-4">
+        <Alert
+          variant="error"
+          title="Error Loading Engagement"
+          message={`Unable to load engagement data: ${error.message}`}
+        />
+        <Button onClick={() => navigate(`/members/${id}`)}>
           Back to Member
-        </button>
+        </Button>
       </div>
     );
   }
@@ -57,29 +67,29 @@ export const MemberEngagement = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="card">
+        <Card>
           <p className="text-sm font-medium text-neutral-500">Connect Groups</p>
           <p className="text-3xl font-bold text-neutral-900 mt-2">{summary.totalGroups}</p>
-        </div>
-        <div className="card">
+        </Card>
+        <Card>
           <p className="text-sm font-medium text-neutral-500">Serving Teams</p>
           <p className="text-3xl font-bold text-neutral-900 mt-2">{summary.totalTeams}</p>
-        </div>
-        <div className="card">
+        </Card>
+        <Card>
           <p className="text-sm font-medium text-neutral-500">Ministries</p>
           <p className="text-3xl font-bold text-neutral-900 mt-2">{summary.totalMinistries}</p>
-        </div>
-        <div className="card">
+        </Card>
+        <Card>
           <p className="text-sm font-medium text-neutral-500">Completed Milestones</p>
           <p className="text-3xl font-bold text-neutral-900 mt-2">
             {summary.completedMilestones}
           </p>
-        </div>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Connect Groups */}
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">Connect Groups</h2>
           {engagementData.connectGroups.length === 0 ? (
             <p className="text-sm text-neutral-500">Not part of any connect group</p>
@@ -104,10 +114,10 @@ export const MemberEngagement = () => {
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Serving Teams */}
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">Serving Teams</h2>
           {engagementData.servingTeams.length === 0 ? (
             <p className="text-sm text-neutral-500">Not serving on any team</p>
@@ -124,10 +134,10 @@ export const MemberEngagement = () => {
                     </div>
                     <div className="flex flex-col items-end">
                       {team.onboardingCompleted && (
-                        <span className="inline-flex items-center text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full">
-                          <CheckCircleIcon className="h-3 w-3 mr-1" />
+                        <Badge variant="success" size="sm">
+                          <CheckCircleIcon className="h-3 w-3 mr-1 inline" />
                           Onboarded
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
@@ -135,10 +145,10 @@ export const MemberEngagement = () => {
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Ministries */}
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">Ministries</h2>
           {engagementData.ministries.length === 0 ? (
             <p className="text-sm text-neutral-500">Not involved in any ministry</p>
@@ -154,10 +164,10 @@ export const MemberEngagement = () => {
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Milestones */}
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">
             Milestones Progress
           </h2>
@@ -181,39 +191,37 @@ export const MemberEngagement = () => {
                     )}
                   </div>
                 </div>
-                <span
-                  className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                <Badge
+                  variant={
                     milestone.status === 'COMPLETED'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'success'
                       : milestone.status === 'IN_PROGRESS'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-neutral-100 text-neutral-800'
-                  }`}
+                      ? 'warning'
+                      : 'default'
+                  }
+                  size="sm"
                 >
                   {milestone.status}
-                </span>
+                </Badge>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Covenant Partnership */}
       {engagementData.covenantPartnership && (
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">
             Covenant Partnership
           </h2>
           <div className="flex items-center space-x-4">
-            <div
-              className={`inline-flex px-4 py-2 text-sm font-semibold rounded-full ${
-                engagementData.covenantPartnership.status === 'ACTIVE'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-neutral-100 text-neutral-800'
-              }`}
+            <Badge
+              variant={engagementData.covenantPartnership.status === 'ACTIVE' ? 'success' : 'default'}
+              size="lg"
             >
               {engagementData.covenantPartnership.status}
-            </div>
+            </Badge>
             {engagementData.covenantPartnership.signatureDate && (
               <p className="text-sm text-neutral-600">
                 Signed on{' '}
@@ -224,12 +232,12 @@ export const MemberEngagement = () => {
               </p>
             )}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Skills */}
       {engagementData.skills && engagementData.skills.length > 0 && (
-        <div className="card">
+        <Card>
           <h2 className="text-lg font-semibold text-neutral-900 mb-4">Skills & Abilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {engagementData.skills.map((skill, index) => (
@@ -238,15 +246,15 @@ export const MemberEngagement = () => {
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-sm text-neutral-500">{skill.proficiencyLevel}</p>
                   {skill.availableToServe && (
-                    <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded">
+                    <Badge variant="success" size="sm">
                       Available
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

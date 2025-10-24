@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { membersAPI } from '../../api/members';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import { LoadingSpinner, Button, Input, Select, Card, Alert } from '../../components/ui';
 import toast from 'react-hot-toast';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
