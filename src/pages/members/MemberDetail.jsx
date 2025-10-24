@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { membersAPI } from '../../api/members';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import Avatar from '../../components/common/Avatar';
+import StatusBadge from '../../components/common/StatusBadge';
+import Badge from '../../components/common/Badge';
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -42,109 +45,117 @@ export const MemberDetail = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-3 p-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/members')}
-            className="text-gray-400 hover:text-gray-600"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <ArrowLeftIcon className="h-4 w-4" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-lg font-bold text-neutral-900">
               {member.firstName} {member.lastName}
             </h1>
-            <p className="text-sm text-gray-600 mt-1">Member Details</p>
           </div>
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex gap-2">
           <Link
             to={`/members/${id}/engagement`}
-            className="btn-secondary flex items-center"
+            className="px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors flex items-center gap-1.5"
           >
-            <ChartBarIcon className="h-5 w-5 mr-2" />
-            View Engagement
+            <ChartBarIcon className="h-3.5 w-3.5" />
+            Engagement
           </Link>
-          <Link to={`/members/${id}/edit`} className="btn-primary flex items-center">
-            <PencilIcon className="h-5 w-5 mr-2" />
+          <Link to={`/members/${id}/edit`} className="px-3 py-1.5 text-xs font-semibold text-white bg-gradient-to-br from-primary to-accent rounded-lg hover:shadow-md transition-all flex items-center gap-1.5">
+            <PencilIcon className="h-3.5 w-3.5" />
             Edit
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Main Info Card */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="card">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Personal Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-start">
-                <UserIcon className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Full Name</p>
-                  <p className="text-base text-gray-900">
-                    {member.firstName} {member.lastName}
-                  </p>
+        <div className="lg:col-span-2 space-y-3">
+          {/* Profile Card with Avatar */}
+          <div className="bg-white border border-neutral-200 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <Avatar
+                name={`${member.firstName} ${member.lastName}`}
+                size="lg"
+                className="flex-shrink-0"
+              />
+              <div className="flex-1">
+                <h2 className="text-base font-bold text-neutral-900 mb-1">
+                  {member.firstName} {member.lastName}
+                </h2>
+                <div className="flex items-center gap-1.5 mb-3">
+                  <StatusBadge status={member.status} size="sm" />
+                  {member.isChild && (
+                    <Badge variant="info" size="sm">Child</Badge>
+                  )}
                 </div>
-              </div>
-
-              {member.email && (
-                <div className="flex items-start">
-                  <EnvelopeIcon className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Email</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {member.email && (
                     <a
                       href={`mailto:${member.email}`}
-                      className="text-base text-accent hover:text-accent-hover"
+                      className="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-primary transition-colors"
                     >
+                      <EnvelopeIcon className="h-3.5 w-3.5" />
                       {member.email}
                     </a>
-                  </div>
-                </div>
-              )}
-
-              {member.phone && (
-                <div className="flex items-start">
-                  <PhoneIcon className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Phone</p>
+                  )}
+                  {member.phone && (
                     <a
                       href={`tel:${member.phone}`}
-                      className="text-base text-accent hover:text-accent-hover"
+                      className="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-primary transition-colors"
                     >
+                      <PhoneIcon className="h-3.5 w-3.5" />
                       {member.phone}
                     </a>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Information */}
+          <div className="bg-white border border-neutral-200 rounded-xl p-4">
+            <h2 className="text-sm font-bold text-neutral-900 mb-3 flex items-center">
+              <UserIcon className="h-4 w-4 mr-1.5 text-primary" />
+              Personal Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Full Name</p>
+                <p className="text-xs font-medium text-neutral-900">
+                  {member.firstName} {member.lastName}
+                </p>
+              </div>
 
               {member.dateOfBirth && (
-                <div className="flex items-start">
-                  <CalendarIcon className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Date of Birth</p>
-                    <p className="text-base text-gray-900">
-                      {format(new Date(member.dateOfBirth), 'MMM dd, yyyy')}
-                    </p>
-                  </div>
+                <div>
+                  <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Date of Birth</p>
+                  <p className="text-xs font-medium text-neutral-900 flex items-center">
+                    <CalendarIcon className="h-3 w-3 mr-1 text-neutral-400" />
+                    {format(new Date(member.dateOfBirth), 'MMM dd, yyyy')}
+                  </p>
                 </div>
               )}
 
               {member.gender && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Gender</p>
-                  <p className="text-base text-gray-900">{member.gender}</p>
+                  <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Gender</p>
+                  <p className="text-xs font-medium text-neutral-900">{member.gender}</p>
                 </div>
               )}
 
               <div>
-                <p className="text-sm font-medium text-gray-500">Type</p>
-                <p className="text-base text-gray-900">
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Member Type</p>
+                <p className="text-xs font-medium text-neutral-900">
                   {member.isChild ? 'Child' : 'Adult'}
                 </p>
               </div>
@@ -153,19 +164,19 @@ export const MemberDetail = () => {
 
           {/* Household Info */}
           {member.household && (
-            <div className="card">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white border border-neutral-200 rounded-xl p-4">
+              <h2 className="text-sm font-bold text-neutral-900 mb-3">
                 Household Information
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Household Name</p>
-                  <p className="text-base text-gray-900">{member.household.name}</p>
+                  <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Household Name</p>
+                  <p className="text-xs font-medium text-neutral-900">{member.household.name}</p>
                 </div>
                 {member.household.primaryAddress && (
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Address</p>
-                    <p className="text-base text-gray-900">
+                    <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">Address</p>
+                    <p className="text-xs font-medium text-neutral-900">
                       {member.household.primaryAddress}
                       {member.household.city && `, ${member.household.city}`}
                       {member.household.state && `, ${member.household.state}`}
@@ -178,42 +189,31 @@ export const MemberDetail = () => {
           )}
 
           {/* Consent Information */}
-          <div className="card">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white border border-neutral-200 rounded-xl p-4">
+            <h2 className="text-sm font-bold text-neutral-900 mb-3">
               Consent & Privacy
             </h2>
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                    member.consentDataStorage
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-lg">
+                <span className="text-xs font-medium text-neutral-700">
+                  Data Storage
+                </span>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${member.consentDataStorage ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50'}`}>
                   {member.consentDataStorage ? 'Granted' : 'Not Granted'}
                 </span>
-                <span className="ml-3 text-sm text-gray-700">
-                  Data Storage Consent
-                </span>
               </div>
-              <div className="flex items-center">
-                <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                    member.consentCommunication
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {member.consentCommunication ? 'Granted' : 'Not Granted'}
+              <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-lg">
+                <span className="text-xs font-medium text-neutral-700">
+                  Communication
                 </span>
-                <span className="ml-3 text-sm text-gray-700">
-                  Communication Consent
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${member.consentCommunication ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50'}`}>
+                  {member.consentCommunication ? 'Granted' : 'Not Granted'}
                 </span>
               </div>
               {member.consentDate && (
-                <p className="text-sm text-gray-500">
-                  Consent given on {format(new Date(member.consentDate), 'MMM dd, yyyy')}
+                <p className="text-xs text-neutral-500 mt-2 flex items-center">
+                  <CalendarIcon className="h-3 w-3 mr-1 text-neutral-400" />
+                  Consent: {format(new Date(member.consentDate), 'MMM dd, yyyy')}
                 </p>
               )}
             </div>
@@ -221,66 +221,78 @@ export const MemberDetail = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Status Card */}
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Status</h3>
-            <span className="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-              {member.status}
+          <div className="bg-white border border-neutral-200 rounded-xl p-3">
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Member Status</h3>
+            <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded inline-block">
+              {member.status?.replace('_', ' ')}
             </span>
           </div>
 
           {/* Dates Card */}
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-4">Important Dates</h3>
-            <div className="space-y-3">
+          <div className="bg-white border border-neutral-200 rounded-xl p-3">
+            <h3 className="text-xs font-bold text-neutral-900 mb-2">Important Dates</h3>
+            <div className="space-y-2">
               {member.firstVisitDate && (
-                <div>
-                  <p className="text-xs text-gray-500">First Visit</p>
-                  <p className="text-sm font-medium text-gray-900">
-                    {format(new Date(member.firstVisitDate), 'MMM dd, yyyy')}
-                  </p>
+                <div className="flex items-start gap-2 p-2 bg-neutral-50 rounded-lg">
+                  <CalendarIcon className="h-3.5 w-3.5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-neutral-500">First Visit</p>
+                    <p className="text-xs font-semibold text-neutral-900">
+                      {format(new Date(member.firstVisitDate), 'MMM dd, yyyy')}
+                    </p>
+                  </div>
                 </div>
               )}
-              <div>
-                <p className="text-xs text-gray-500">Member Since</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {format(new Date(member.createdAt), 'MMM dd, yyyy')}
-                </p>
+              <div className="flex items-start gap-2 p-2 bg-neutral-50 rounded-lg">
+                <CalendarIcon className="h-3.5 w-3.5 text-secondary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-neutral-500">Member Since</p>
+                  <p className="text-xs font-semibold text-neutral-900">
+                    {format(new Date(member.createdAt), 'MMM dd, yyyy')}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Last Updated</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {format(new Date(member.updatedAt), 'MMM dd, yyyy')}
-                </p>
+              <div className="flex items-start gap-2 p-2 bg-neutral-50 rounded-lg">
+                <CalendarIcon className="h-3.5 w-3.5 text-accent mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-neutral-500">Last Updated</p>
+                  <p className="text-xs font-semibold text-neutral-900">
+                    {format(new Date(member.updatedAt), 'MMM dd, yyyy')}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-4">Quick Actions</h3>
-            <div className="space-y-2">
+          <div className="bg-white border border-neutral-200 rounded-xl p-3">
+            <h3 className="text-xs font-bold text-neutral-900 mb-2">Quick Actions</h3>
+            <div className="space-y-1.5">
               {member.email && (
                 <a
                   href={`mailto:${member.email}`}
-                  className="btn-outline w-full text-center"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-lg font-medium text-xs transition-colors"
                 >
+                  <EnvelopeIcon className="h-3.5 w-3.5" />
                   Send Email
                 </a>
               )}
               {member.phone && (
                 <a
                   href={`tel:${member.phone}`}
-                  className="btn-outline w-full text-center"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-lg font-medium text-xs transition-colors"
                 >
+                  <PhoneIcon className="h-3.5 w-3.5" />
                   Call Member
                 </a>
               )}
               <Link
                 to={`/members/${id}/engagement`}
-                className="btn-secondary w-full text-center"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-medium text-xs transition-colors"
               >
+                <ChartBarIcon className="h-3.5 w-3.5" />
                 View Engagement
               </Link>
             </div>

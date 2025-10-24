@@ -113,20 +113,20 @@ export const MemberForm = () => {
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto p-4 space-y-4">
       {/* Header */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-3">
         <button
           onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-gray-600"
+          className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
         >
-          <ArrowLeftIcon className="h-6 w-6" />
+          <ArrowLeftIcon className="h-5 w-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl font-bold text-neutral-900">
             {isEditMode ? 'Edit Member' : 'Add New Member'}
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-neutral-500">
             {isEditMode
               ? 'Update member information'
               : 'Enter the details for the new member'}
@@ -135,16 +135,16 @@ export const MemberForm = () => {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="card">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-neutral-200 p-6">
         <div className="space-y-6">
           {/* Personal Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <h3 className="text-base font-bold text-neutral-900 mb-4">
               Personal Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   First Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -159,7 +159,7 @@ export const MemberForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Last Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -174,7 +174,7 @@ export const MemberForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Email
                 </label>
                 <input
@@ -188,7 +188,7 @@ export const MemberForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Phone
                 </label>
                 <input
@@ -202,7 +202,7 @@ export const MemberForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Date of Birth
                 </label>
                 <input
@@ -215,7 +215,7 @@ export const MemberForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Gender
                 </label>
                 <select
@@ -237,12 +237,12 @@ export const MemberForm = () => {
 
           {/* Church Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <h3 className="text-base font-bold text-neutral-900 mb-4">
               Church Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-900 mb-2">
                   Status <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -266,9 +266,9 @@ export const MemberForm = () => {
                   name="isChild"
                   checked={formData.isChild}
                   onChange={handleChange}
-                  className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  className="h-4 w-4 text-accent focus:ring-accent border-neutral-300 rounded"
                 />
-                <label className="ml-2 block text-sm text-gray-700">
+                <label className="ml-2 block text-sm text-neutral-700">
                   Is this a child?
                 </label>
               </div>
@@ -277,7 +277,7 @@ export const MemberForm = () => {
 
           {/* Consent */}
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Consent</h3>
+            <h3 className="text-base font-bold text-neutral-900 mb-4">Consent</h3>
             <div className="space-y-3">
               <div className="flex items-start">
                 <input
@@ -285,11 +285,10 @@ export const MemberForm = () => {
                   name="consentDataStorage"
                   checked={formData.consentDataStorage}
                   onChange={handleChange}
-                  className="mt-1 h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  className="mt-1 h-4 w-4 text-accent focus:ring-accent border-neutral-300 rounded"
                 />
-                <label className="ml-2 block text-sm text-gray-700">
-                  I consent to my data being stored and processed by the church for
-                  membership and communication purposes.
+                <label className="ml-2 block text-sm text-neutral-900">
+                  I consent to my data being stored and processed by the church for membership and communication purposes.
                 </label>
               </div>
 
@@ -299,29 +298,28 @@ export const MemberForm = () => {
                   name="consentCommunication"
                   checked={formData.consentCommunication}
                   onChange={handleChange}
-                  className="mt-1 h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  className="mt-1 h-4 w-4 text-accent focus:ring-accent border-neutral-300 rounded"
                 />
-                <label className="ml-2 block text-sm text-gray-700">
-                  I consent to receiving communications from the church (emails,
-                  newsletters, event updates).
+                <label className="ml-2 block text-sm text-neutral-900">
+                  I consent to receiving communications from the church (emails, newsletters, event updates).
                 </label>
               </div>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-6 border-t border-neutral-200">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="btn-outline"
+              className="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
               disabled={isLoading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary disabled:opacity-50"
+              className="px-6 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? 'Saving...' : isEditMode ? 'Update Member' : 'Create Member'}

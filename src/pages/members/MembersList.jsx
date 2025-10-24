@@ -14,6 +14,9 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
+import Avatar from '../../components/common/Avatar';
+import StatusBadge from '../../components/common/StatusBadge';
+import Badge from '../../components/common/Badge';
 import toast from 'react-hot-toast';
 
 const STATUS_OPTIONS = [
@@ -72,221 +75,205 @@ export const MembersList = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 p-4">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-1">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Members</h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage your church members and their information
-          </p>
+          <h1 className="text-lg font-bold text-neutral-900">Members</h1>
         </div>
-        {canCreateMember(user?.role) && (
-          <Link to="/members/new" className="btn-primary">
-            <PlusIcon className="h-5 w-5 inline mr-2" />
-            Add Member
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <button className="px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+            Filters
+          </button>
+          {canCreateMember(user?.role) && (
+            <Link to="/members/new" className="px-3 py-1.5 text-xs font-semibold text-white bg-gradient-to-br from-primary to-accent rounded-lg hover:shadow-md transition-all">
+              + Add Member
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Filters */}
-      <div className="card">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+      {/* Filters - Compact Row */}
+      <div className="bg-white border border-neutral-200 rounded-xl p-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex-1 min-w-[200px]">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search members..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="input-field pl-10"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-50 border border-neutral-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary"
               />
-              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="input-field"
-            >
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/30"
+          >
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select
-              value={isChildFilter}
-              onChange={(e) => setIsChildFilter(e.target.value)}
-              className="input-field"
-            >
-              <option value="">All</option>
-              <option value="false">Adults</option>
-              <option value="true">Children</option>
-            </select>
-          </div>
+          <select
+            value={isChildFilter}
+            onChange={(e) => setIsChildFilter(e.target.value)}
+            className="px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/30"
+          >
+            <option value="">All Types</option>
+            <option value="false">Adults</option>
+            <option value="true">Children</option>
+          </select>
 
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setSearch('');
-                setStatusFilter('');
-                setIsChildFilter('');
-              }}
-              className="btn-outline w-full"
-            >
-              Clear Filters
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              setSearch('');
+              setStatusFilter('');
+              setIsChildFilter('');
+            }}
+            className="px-3 py-1.5 text-xs font-medium text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-lg hover:bg-neutral-100 transition-colors"
+          >
+            Clear
+          </button>
         </div>
       </div>
 
-      {/* Members Table */}
-      <div className="card overflow-hidden p-0">
-        {isLoading ? (
-          <div className="py-12">
-            <LoadingSpinner size="lg" text="Loading members..." />
+      {/* Members Grid */}
+      {isLoading ? (
+        <div className="py-8">
+          <LoadingSpinner size="md" text="Loading members..." />
+        </div>
+      ) : filteredMembers?.length === 0 ? (
+        <div className="bg-white border border-neutral-200 rounded-xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 mb-3">
+            <MagnifyingGlassIcon className="h-6 w-6 text-neutral-400" />
           </div>
-        ) : filteredMembers?.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No members found</p>
+          <h3 className="text-sm font-semibold text-neutral-900 mb-1">No members found</h3>
+          <p className="text-xs text-neutral-500">Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {/* Results count */}
+          <div className="flex items-center justify-between px-1">
+            <p className="text-xs text-neutral-600">
+              <span className="font-semibold text-neutral-900">{filteredMembers?.length}</span> members
+            </p>
+            {data?.pagination && (
+              <p className="text-xs text-neutral-500">
+                Page {page} of {data.pagination.totalPages}
+              </p>
+            )}
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredMembers?.map((member) => (
-                  <tr key={member.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {member.firstName} {member.lastName}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{member.email || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{member.phone || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        {member.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {member.isChild ? 'Child' : 'Adult'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                      <Link
-                        to={`/members/${member.id}`}
-                        className="text-secondary hover:text-secondary-light inline-flex items-center"
-                      >
-                        <EyeIcon className="h-5 w-5" />
-                      </Link>
-                      <Link
-                        to={`/members/${member.id}/edit`}
-                        className="text-accent hover:text-accent-hover inline-flex items-center"
-                      >
-                        <PencilIcon className="h-5 w-5" />
-                      </Link>
-                      {canDeleteMember(user?.role) && (
-                        <button
-                          onClick={() => {
-                            setMemberToDelete(member);
-                            setDeleteDialogOpen(true);
-                          }}
-                          className="text-red-600 hover:text-red-800 inline-flex items-center"
-                        >
-                          <TrashIcon className="h-5 w-5" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
 
-        {/* Pagination */}
-        {data?.pagination && (
-          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-                className="btn-outline disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={page === data.pagination.totalPages}
-                className="btn-outline disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Showing page <span className="font-medium">{page}</span> of{' '}
-                  <span className="font-medium">{data.pagination.totalPages}</span>
-                  {' '}({data.pagination.total} total members)
-                </p>
+          {/* Member Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+            {filteredMembers?.map((member) => (
+              <div key={member.id} className="bg-white border border-neutral-200 rounded-xl p-3 hover:shadow-md hover:border-primary/30 transition-all group">
+                <div className="flex items-start gap-2.5 mb-3">
+                  {/* Avatar */}
+                  <Avatar
+                    name={`${member.firstName} ${member.lastName}`}
+                    size="sm"
+                    className="flex-shrink-0"
+                  />
+
+                  {/* Member Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xs font-bold text-neutral-900 truncate mb-0.5">
+                      {member.firstName} {member.lastName}
+                    </h3>
+                    <p className="text-xs text-neutral-500 truncate">
+                      {member.email || 'No email'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                {member.phone && (
+                  <p className="text-xs text-neutral-600 mb-2 truncate">
+                    📞 {member.phone}
+                  </p>
+                )}
+
+                {/* Status & Type Badges */}
+                <div className="flex items-center gap-1.5 mb-3">
+                  <StatusBadge status={member.status} size="sm" />
+                  {member.isChild && (
+                    <Badge variant="info" size="sm">
+                      Child
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-1.5">
+                  <Link
+                    to={`/members/${member.id}`}
+                    className="flex-1 inline-flex items-center justify-center px-2 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors"
+                  >
+                    <EyeIcon className="h-3 w-3 mr-1" />
+                    View
+                  </Link>
+                  <Link
+                    to={`/members/${member.id}/edit`}
+                    className="flex-1 inline-flex items-center justify-center px-2 py-1.5 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
+                  >
+                    <PencilIcon className="h-3 w-3 mr-1" />
+                    Edit
+                  </Link>
+                  {canDeleteMember(user?.role) && (
+                    <button
+                      onClick={() => {
+                        setMemberToDelete(member);
+                        setDeleteDialogOpen(true);
+                      }}
+                      className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete member"
+                    >
+                      <TrashIcon className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
               </div>
-              <div>
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {data?.pagination && data.pagination.totalPages > 1 && (
+            <div className="bg-white border border-neutral-200 rounded-xl p-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-neutral-600">
+                  Page <span className="font-semibold">{page}</span> of{' '}
+                  <span className="font-semibold">{data.pagination.totalPages}</span>
+                  {' '}• {data.pagination.total} total
+                </p>
+                <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => setPage(page - 1)}
                     disabled={page === 1}
-                    className="btn-outline rounded-r-none disabled:opacity-50"
+                    className="px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setPage(page + 1)}
                     disabled={page === data.pagination.totalPages}
-                    className="btn-outline rounded-l-none disabled:opacity-50"
+                    className="px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Next
                   </button>
-                </nav>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog

@@ -1,13 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   HomeIcon,
   UsersIcon,
   UserGroupIcon,
   ChartBarIcon,
   Cog6ToothIcon,
-  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
+import { membersAPI } from '../../api/members';
+import Badge from '../common/Badge';
+import Avatar from '../common/Avatar';
+import logoIcon from '../../assets/icon.png';
+import logoFull from '../../assets/logo.png';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon, roles: [] },
@@ -31,6 +36,14 @@ export const Sidebar = ({ open, setOpen }) => {
   const location = useLocation();
   const { user, hasRole } = useAuth();
 
+  // Fetch unconnected members count
+  const { data: unconnectedData } = useQuery({
+    queryKey: ['unconnected-count'],
+    queryFn: () => membersAPI.getUnconnected(),
+  });
+
+  const unconnectedCount = unconnectedData?.count || 0;
+
   const filteredNavigation = navigation.filter((item) => {
     if (item.roles.length === 0) return true;
     return hasRole(item.roles);
@@ -50,31 +63,28 @@ export const Sidebar = ({ open, setOpen }) => {
       <div
         className={`${
           open ? 'translate-x-0' : '-translate-x-full'
-        } fixed inset-y-0 left-0 z-30 w-72 bg-white border-r border-neutral-200 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}
+        } fixed inset-y-0 left-0 z-30 w-60 bg-neutral-50 border-r border-neutral-200 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-20 px-6 border-b border-neutral-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <SparklesIcon className="w-6 h-6 text-white" />
-              </div>
+          <div className="flex items-center h-14 px-4 border-b border-neutral-200 bg-white">
+            <Link to="/" className="flex items-center space-x-2">
+              <img src={logoIcon} alt="Shepherd Logo" className="w-7 h-7 rounded-lg" />
               <div>
-                <h1 className="text-xl font-bold gradient-text">Shepherd</h1>
-                <p className="text-xs text-neutral-500">Member Management</p>
+                <h1 className="text-base font-bold text-neutral-900">Shepherd</h1>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Workspaces Section */}
-          <div className="px-4 py-4">
-            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider px-3 mb-2">
+          <div className="px-3 pt-3 pb-1">
+            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider px-2">
               Workspaces
             </p>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto py-2">
             {filteredNavigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -83,22 +93,22 @@ export const Sidebar = ({ open, setOpen }) => {
                   to={item.href}
                   className={`${
                     isActive
-                      ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-r-3 border-primary'
-                      : 'text-neutral-600 hover:bg-neutral-50'
-                  } group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200`}
+                      ? 'bg-white text-primary font-medium shadow-sm border border-neutral-200'
+                      : 'text-neutral-600 hover:bg-white hover:text-neutral-900'
+                  } group flex items-center px-3 py-2 text-xs rounded-lg transition-all duration-150`}
                   onClick={() => setOpen(false)}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 ${
+                    className={`mr-2.5 h-4 w-4 flex-shrink-0 ${
                       isActive ? 'text-primary' : 'text-neutral-400 group-hover:text-neutral-600'
                     }`}
                     aria-hidden="true"
                   />
                   <span className="flex-1">{item.name}</span>
-                  {item.name === 'Unconnected' && (
-                    <span className="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-accent/10 text-accent">
-                      New
-                    </span>
+                  {item.name === 'Unconnected' && unconnectedCount > 0 && (
+                    <Badge variant="danger" size="sm" className="ml-1">
+                      {unconnectedCount}
+                    </Badge>
                   )}
                 </Link>
               );
@@ -106,20 +116,18 @@ export const Sidebar = ({ open, setOpen }) => {
           </nav>
 
           {/* User info */}
-          <div className="p-4 border-t border-neutral-200">
-            <div className="flex items-center px-3 py-3 rounded-xl bg-gradient-to-br from-neutral-50 to-neutral-100">
-              <div className="flex-shrink-0">
-                <div className="avatar">
-                  <span>
-                    {user?.firstName?.[0]}{user?.lastName?.[0]}
-                  </span>
-                </div>
-              </div>
-              <div className="ml-3 flex-1 min-w-0">
-                <p className="text-sm font-semibold text-neutral-900 truncate">
+          <div className="p-3 border-t border-neutral-200 bg-white">
+            <div className="flex items-center px-2 py-2 rounded-lg">
+              <Avatar
+                name={`${user?.firstName || ''} ${user?.lastName || ''}`}
+                size="sm"
+                className="flex-shrink-0"
+              />
+              <div className="ml-2 flex-1 min-w-0">
+                <p className="text-xs font-semibold text-neutral-900 truncate">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-xs text-neutral-500 truncate">
+                <p className="text-xs text-neutral-500 truncate uppercase">
                   {user?.role?.replace('_', ' ')}
                 </p>
               </div>
