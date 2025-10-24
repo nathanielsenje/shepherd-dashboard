@@ -8,15 +8,6 @@ export const authAPI = {
 
   register: async (userData) => {
     const response = await apiClient.post('/auth/register', userData);
-
-    // Store tokens like login does
-    if (response.data.accessToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
-    }
-    if (response.data.refreshToken) {
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-    }
-
     return response.data;
   },
 
