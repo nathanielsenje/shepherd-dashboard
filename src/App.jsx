@@ -6,6 +6,7 @@ import { DashboardLayout } from './components/layout/DashboardLayout';
 
 // Pages
 import { Login } from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
 import { Dashboard } from './pages/dashboard/Dashboard';
 import { MembersList } from './pages/members/MembersList';
 import { MemberForm } from './pages/members/MemberForm';
@@ -15,6 +16,7 @@ import { UnconnectedMembers } from './pages/members/UnconnectedMembers';
 import { UserProfile } from './pages/profile/UserProfile';
 import { SearchResults } from './pages/search/SearchResults';
 import { Settings } from './pages/settings/Settings';
+import { Analytics } from './pages/analytics/Analytics';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -35,6 +37,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
             {/* Protected Routes */}
             <Route
@@ -142,6 +145,17 @@ function App() {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <Settings />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute roles={['SUPER_ADMIN', 'ADMIN_STAFF']}>
+                  <DashboardLayout>
+                    <Analytics />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
